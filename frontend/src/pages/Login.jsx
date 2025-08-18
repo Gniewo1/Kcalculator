@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import Navbar from "../components/Navbar/Navbar";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -16,10 +17,13 @@ export default function Login() {
   };
 
   return (
+    <>
+    <Navbar/>
     <form onSubmit={handleSubmit}>
       <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Login" />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Hasło" />
       <button type="submit">Zaloguj</button>
     </form>
+    </>
   );
 }
