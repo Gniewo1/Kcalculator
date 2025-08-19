@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,7 +16,9 @@ export default function Login() {
       password,
     });
     localStorage.setItem("token", res.data.token);
-    alert("Zalogowano jako " + res.data.user.username);
+    alert("Login as " + res.data.user.username);
+    navigate('/');
+
   };
 
   return (
@@ -21,7 +26,7 @@ export default function Login() {
     <Navbar/>
     <form onSubmit={handleSubmit}>
       <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Login" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Hasło" />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Zaloguj</button>
     </form>
     </>

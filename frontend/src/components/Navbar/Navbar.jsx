@@ -1,35 +1,73 @@
-import React from "react";
 import "./Navbar.css";
+import axios from "axios";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-const logout = async () => {
-  const token = localStorage.getItem("token");
+  function redirect() {
+    navigate('/login');
+  }
 
-    if (token) {
-        try {
-        await axios.post(
-            "http://127.0.0.1:8000/api/auth/logout/",
-            {},
-            {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-            }
-        );
-        } catch (err) {
-        console.error("Logout error:", err);
-        }
+  useEffect(() => {
+    const verifyLogin = async () => {
+        const loggedIn = await checkLogin();
+        setIsAuthenticated(loggedIn);
+      };
+    verifyLogin();
+    }, []);
+
+  const logout = async () => {
+    const token = localStorage.getItem("token");
+
+      if (token) {
+          try {
+          await axios.post(
+              "http://127.0.0.1:8000/auth/logout/",
+              {},
+              {
+              headers: {
+                  Authorization: `Token ${token}`,
+              },
+              }
+          );
+          } catch (err) {
+          console.error("Logout error:", err);
+          }
+      }
+
+      localStorage.removeItem("token");
+      window.location.href = "/login"; // przekierowanie na login
+      };
+
+    /// Check if user is login
+
+  async function checkLogin() {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
+
+    try {
+      const res = await axios.get("/auth/check-auth/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+      return res.status === 200;
+    } catch {
+      return false;
     }
-
-    // usuń token lokalnie
-    localStorage.removeItem("token");
-    window.location.href = "/login"; // przekierowanie na login
-    };
+  }
 
   return (
     <nav className="navbar">
-      <button onClick={logout}>Logout</button>
+    {isAuthenticated ? (
+      <button className="btn-logout" onClick={logout}>Logout</button>
+    ) :
+    (
+      <button className="btn-login" onClick={redirect}>Login</button>
+    )}
+      
+      
     </nav>
   );
   

@@ -6,3 +6,14 @@
     align-items: center;
     background-color: blueviolet;
 }
+
+
+.btn-login{
+    background-color: white;
+    color:black;
+}
+
+.btn-logout{
+    background-color: red;
+    color: white;
+}
