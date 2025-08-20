@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate, Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,13 +60,28 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-    {isAuthenticated ? (
-      <button className="btn-logout" onClick={logout}>Logout</button>
-    ) :
-    (
-      <button className="btn-login" onClick={redirect}>Login</button>
-    )}
-      
+      <div className="logo">
+        <Link to="/">Logo</Link>
+      </div>
+
+      <ul className="navbar-links">
+        <li>
+          <Link>Placeholder1</Link>
+        </li>
+        <li>
+          <Link>Placeholder2</Link>
+        </li>
+        <li>
+              {isAuthenticated ? (
+        <button className="btn-logout" onClick={logout}>Logout</button>
+      ) :
+      (
+        <Link to="/login">Login</Link>
+      )}
+        
+        </li>
+      </ul>
+
       
     </nav>
   );
