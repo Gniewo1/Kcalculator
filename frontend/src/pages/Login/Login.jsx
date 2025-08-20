@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import { useNavigate } from 'react-router-dom';
+import "./Login.css";
 
 
 export default function Login() {
@@ -24,11 +25,13 @@ export default function Login() {
   return (
     <>
     <Navbar/>
+    <div className="login">
     <form onSubmit={handleSubmit}>
       <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Login" />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Zaloguj</button>
     </form>
+    </div>
     </>
   );
 }
