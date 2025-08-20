@@ -25,13 +25,13 @@ export default function Login() {
   return (
     <>
     <Navbar/>
-    <div className="login">
-    <form onSubmit={handleSubmit}>
+    {/* <div class="form-container"> */}
+    <form className="login" onSubmit={handleSubmit}>
       <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Login" />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Zaloguj</button>
+      <button type="submit">Log In</button>
     </form>
-    </div>
+    {/* </div> */}
     </>
   );
 }
