@@ -12,9 +12,11 @@
 }
 
 .logo{
-    font-size: 32px;
+    font-size: 36px;
     text-decoration: none;
-    margin-left: 10px;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    margin-top: 10px;
 }
 
 .logo a{
