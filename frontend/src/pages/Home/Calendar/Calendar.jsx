@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const Calendar = () => {
   const today = new Date();
@@ -8,6 +9,7 @@ const Calendar = () => {
   "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"
 ];
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const navigate = useNavigate();
 
   // Pierwszy i ostatni dzień miesiąca
   const firstDay = new Date(currentYear, currentMonth, 1);
@@ -39,8 +41,8 @@ const Calendar = () => {
         {monthNames[currentMonth]} {currentYear}
       </h2>
       <div>
-        <button onClick={prevMonth}>◀</button>
-        <button onClick={nextMonth}>▶</button>
+        <button style={{margin: "10px"}} onClick={prevMonth}>◀</button>
+        <button style={{margin: "10px"}} onClick={nextMonth}>▶</button>
       </div>
       
 
@@ -81,7 +83,7 @@ const Calendar = () => {
               borderRadius: "5px",
               cursor: "pointer",
             }}
-            onClick={() => alert(`Kliknięto dzień ${day}`)}
+            onClick={() => navigate(`/calendar/${currentYear}/${currentMonth + 1}/${day}`)}
           >
             {day}
           </button>

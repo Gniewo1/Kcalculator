@@ -5,6 +5,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home/Home";
 import Test from "./pages/Test/Test";
+import DayView from "./pages/DayView/DayView";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         {/* Strona główna np. Dashboard lub Home */}
         <Route path="/" element={<Home/>} />
         <Route path="/test" element={<Test/>} />
+        <Route path="/calendar/:year/:month/:day" element={<DayView />} />
       </Routes>
     </Router>
   );
