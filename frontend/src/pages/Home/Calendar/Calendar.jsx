@@ -3,6 +3,10 @@ import { useState } from "react";
 const Calendar = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const monthNames = [
+  "Sty", "Lut", "Mar", "Kwi", "Maj", "Cze",
+  "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"
+];
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
   // Pierwszy i ostatni dzień miesiąca
@@ -32,12 +36,13 @@ const Calendar = () => {
   return (
     <div style={{ textAlign: "center" }}>
       <h2>
-        {today.toLocaleString("default", { month: "long" })} {currentYear}
+        {monthNames[currentMonth]} {currentYear}
       </h2>
       <div>
         <button onClick={prevMonth}>◀</button>
         <button onClick={nextMonth}>▶</button>
       </div>
+      
 
       <div
         style={{
