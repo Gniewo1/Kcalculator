@@ -1,4 +1,5 @@
 import Navbar from "../../components/Navbar/Navbar";
+import Calendar from "./Calendar/Calendar";
 
 export default function Home() {
 
@@ -6,7 +7,7 @@ export default function Home() {
   return (
     <>
     <Navbar/>
-    <h1>Home Page</h1>
+    <Calendar/>
     </>
   );
 }
