@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import Itemscomponent from "./ItemsComponent/ItemsComponent";
+import ItemsComponent from "./ItemsComponent/ItemsComponent";
 
 const DayView = () => {
   const { year, month, day } = useParams();
@@ -76,6 +76,8 @@ const DayView = () => {
                 ))}
               </select>
             </label>
+
+            {selectedItem && <ItemsComponent id={selectedItem}/>}
 
               <br /><br />
 
