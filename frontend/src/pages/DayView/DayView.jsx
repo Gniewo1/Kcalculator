@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import axios from "axios";
+import Itemscomponent from "./ItemsComponent/ItemsComponent";
 
 const DayView = () => {
   const { year, month, day } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ title: "", description: "" });
-  const [itemNames, setItemNames] = useState([]);
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('')
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,15 +18,14 @@ const DayView = () => {
     // console.log("Submitted data:", formData);
     // alert(`Title: ${formData.title}\nDescription: ${formData.description}`);
     // setFormData({ title: "", description: "" });
-    console.log(itemNames);
+    console.log(items);
     setShowModal(false);
   };
 
   useEffect(() => {
-    console.log("Działa");
       fetch('http://localhost:8000/item/item-names/')
       .then((res) => res.json())
-      .then((data) => setItemNames(data))
+      .then((data) => setItems(data))
       .catch((err) => console.error('Error fetching items:', err));
 
     
@@ -60,26 +60,28 @@ const DayView = () => {
           }}>
             <h3>Add New Item</h3>
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                value={formData.title}
-                onChange={handleChange}
+
+              <label>
+              <select
+                value={selectedItem}
+                onChange={(e) => setSelectedItem(e.target.value)}
                 required
-              />
+                className="styled-select"
+              >
+                <option value="">-- Select Item --</option>
+                {items.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
               <br /><br />
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={formData.description}
-                onChange={handleChange}
-              />
-              <br /><br />
+
               <button type="submit">Save</button>
-              <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>
-                Cancel
-              </button>
+              <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
+
             </form>
           </div>
         </div>
