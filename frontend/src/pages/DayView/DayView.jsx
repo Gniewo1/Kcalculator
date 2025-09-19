@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from 'react';
+import axios from "axios";
 
 const DayView = () => {
   const { year, month, day } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ title: "", description: "" });
+  const [itemNames, setItemNames] = useState([]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,11 +14,23 @@ const DayView = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted data:", formData);
-    alert(`Title: ${formData.title}\nDescription: ${formData.description}`);
-    setFormData({ title: "", description: "" });
+    // console.log("Submitted data:", formData);
+    // alert(`Title: ${formData.title}\nDescription: ${formData.description}`);
+    // setFormData({ title: "", description: "" });
+    console.log(itemNames);
     setShowModal(false);
   };
+
+  useEffect(() => {
+    console.log("Działa");
+      fetch('http://localhost:8000/item/item-names/')
+      .then((res) => res.json())
+      .then((data) => setItemNames(data))
+      .catch((err) => console.error('Error fetching items:', err));
+
+    
+
+  }, []);
 
   return (
     <>
