@@ -1,32 +1,74 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import ItemsComponent from "./ItemsComponent/ItemsComponent";
+import axios from "axios";
+import Navbar from "../../components/Navbar/Navbar";
 
 const DayView = () => {
   const { year, month, day } = useParams();
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ title: "", description: "" });
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('')
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [quantity, setQuantity] = useState('');
+  const [userId, setUserId] = useState(null);
+  const date = new Date(year, month - 1, day); // miesiące od 0
+  const formattedDate = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Submitted data:", formData);
-    // alert(`Title: ${formData.title}\nDescription: ${formData.description}`);
-    // setFormData({ title: "", description: "" });
-    console.log(items);
+    const payload = {
+      user: userId,
+      item: selectedItem,
+      date: formattedDate,
+      ...(selectedOption === "gram" ? { grams: quantity } : {}),
+      ...(selectedOption === "portion" ? { portion: quantity } : {})
+    };
+    
+    const postItem = async () => {
+      console.log(payload);
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.post('http://localhost:8000/item/eaten-item/', 
+          payload,
+          {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+          }
+        );
+        console.log("Item zapisany:", response.data);
+      } catch (error) {
+        console.error("Błąd przy zapisywaniu itemu:", error);
+      }
+    };
+    postItem();
     setShowModal(false);
   };
 
   useEffect(() => {
-      fetch('http://localhost:8000/item/item-names/')
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error('Error fetching items:', err));
+    const fetchUserId = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.get('http://localhost:8000/auth/user/', { // Example endpoint
+            headers: {
+                'Authorization': `Token ${token}`,
+            },
+        });
+        setUserId(response.data.id); // Assuming the response contains user ID
+      } catch (error) {
+          console.error('Error fetching user ID', error);
+      }
+    };
+
+    fetchUserId();
+
+    fetch('http://localhost:8000/item/item-names/')
+    .then((res) => res.json())
+    .then((data) => setItems(data))
+    .catch((err) => console.error('Error fetching items:', err));
 
     
 
@@ -34,6 +76,7 @@ const DayView = () => {
 
   return (
     <>
+    <Navbar/>
       <h1>DayView</h1>
       <h2>Year: {year}</h2>
       <h2>Month: {month}</h2>
@@ -77,11 +120,11 @@ const DayView = () => {
               </select>
             </label>
 
-            {selectedItem && <ItemsComponent id={selectedItem}/>}
+            {selectedItem && <ItemsComponent id={selectedItem} selectedOption={selectedOption} setSelectedOption={setSelectedOption} quantity={quantity} setQuantity={setQuantity}/>}
 
               <br /><br />
 
-              <button type="submit">Save</button>
+              <button type="submit">Add</button>
               <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
 
             </form>

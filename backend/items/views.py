@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Item
 from rest_framework.response import Response
-from .serializers import ItemSerializer
+from .serializers import ItemSerializer, EatenItemSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status
@@ -12,7 +12,7 @@ def item_names(request):
     items = Item.objects.all().values('id', 'name')
     return JsonResponse(list(items), safe=False)
 
-class ItemsView(APIView):
+class ItemView(APIView):
 
     def get(self, request, pk=None):
         if pk:
@@ -24,5 +24,13 @@ class ItemsView(APIView):
             serializer = ItemSerializer(items, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+class EatenItemView(APIView):
+
+    def post(self, request):
+        serializer = EatenItemSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

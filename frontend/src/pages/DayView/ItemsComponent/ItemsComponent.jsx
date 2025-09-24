@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-export default function Itemscomponent ({ id }) {
+export default function Itemscomponent ({ id, quantity, selectedOption, setSelectedOption, setQuantity }) {
     const [item, setItem] = useState('')
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [quantity, setQuantity] = useState('');
+
 
 
     useEffect(() => {
@@ -61,7 +60,7 @@ export default function Itemscomponent ({ id }) {
 
       <div>
         <input value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="" />
-        {selectedOption == "gram" && (<h3>grams ({item.cal_in_gram*quantity}kcal)</h3>)}
+        {selectedOption == "gram" && (<h3>grams ({Math.round(item.cal_in_gram*quantity)}kcal)</h3>)}
         {selectedOption == "portion" && (<h3>of portion ({Math.round(item.cal_in_portion*quantity)}kcal)</h3>)}
       </div>
     </>

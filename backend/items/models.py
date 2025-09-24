@@ -14,8 +14,8 @@ class Item(models.Model):
 class EatenItem(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    portion = models.DecimalField(max_digits=6, decimal_places=2, default=None)
-    grams = models.DecimalField(max_digits=6, decimal_places=2, default=None)
+    portion = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    grams = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     date = models.DateField()
 
 # class CaloriesLimit(models.Model):

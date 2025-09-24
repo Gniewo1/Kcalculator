@@ -36,7 +36,7 @@ class LoginAPI(generics.GenericAPIView):
 
 # Dane o aktualnym użytkowniku
 class UserAPI(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_object(self):
