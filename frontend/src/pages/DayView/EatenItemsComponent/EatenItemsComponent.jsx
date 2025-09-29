@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import axios from "axios";
 
 
-export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems, fetchEatenItems}) {
+export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems, fetchEatenItems, EditItem}) {
     
 
     useEffect(() => {
@@ -14,7 +14,6 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
 
     return(
         <>
-        <h1>Eaten Component</h1>
 
         <div>
         <h2>Zjedzone produkty</h2>
@@ -24,6 +23,7 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
                 {item.item_name} 
                 {item.grams && ` – ${item.grams} g – ${Math.round(item.calories)} kcal`}
                 {item.portion && ` – ${item.portion} portions – ${Math.round(item.calories)} kcal`}
+                <button onClick={() => {EditItem(item);}}>Edit</button>
             </li>
             ))}
         </ul>

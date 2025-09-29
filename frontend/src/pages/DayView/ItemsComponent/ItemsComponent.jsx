@@ -4,8 +4,6 @@ import axios from 'axios';
 export default function Itemscomponent ({ id, quantity, selectedOption, setSelectedOption, setQuantity }) {
     const [item, setItem] = useState('')
 
-
-
     useEffect(() => {
       if (!id) return;
       axios.get(`http://localhost:8000/item/item/${id}/`)

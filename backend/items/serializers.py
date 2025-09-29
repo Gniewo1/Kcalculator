@@ -33,7 +33,8 @@ class EatenItemSerializerGet(serializers.ModelSerializer):
     item_name = serializers.CharField(source='item.name', read_only=True)
     item_cal_gram = serializers.DecimalField(source='item.cal_in_gram', max_digits=6, decimal_places=2, read_only=True)
     item_cal_portion = serializers.DecimalField(source='item.cal_in_portion', max_digits=6, decimal_places=2, read_only=True)
+    item_id = serializers.CharField(source='item.id', read_only=True)
 
     class Meta:
         model = EatenItem
-        fields = ['user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion', 'calories']
+        fields = [ 'item_id', 'user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion', 'calories']

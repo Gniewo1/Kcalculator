@@ -17,6 +17,22 @@ const DayView = () => {
   const formattedDate = [year, String(month).padStart(2, "0"), String(day).padStart(2, "0"),].join("-");
   const [eatenItems, setEatenItems] = useState([]);
 
+  const AddItem = async () => {
+    setSelectedOption(null);
+    setQuantity('');
+    setSelectedItem('');
+    setShowModal(true);
+  }
+
+  const EditItem = (item) => {
+    if (item.grams) {setSelectedOption("gram");}
+    if (item.portion) {setSelectedOption("portion");}
+    setSelectedItem(item.item_id);
+    setQuantity(item.grams || item.portion);
+    setShowModal(true);
+    
+  }
+
 
   const fetchEatenItems = async () => {
     const token = localStorage.getItem('token');
@@ -26,7 +42,6 @@ const DayView = () => {
                 'Authorization': `Token ${token}`,
             },
         });
-        console.log(response.data);
         setEatenItems(response.data);
     } catch (error) {
         console.error('Error fetching EatenItems', error);
@@ -44,7 +59,6 @@ const DayView = () => {
     };
     
   const postItem = async () => {
-    console.log(payload);
     const token = localStorage.getItem('token');
     try {
       const response = await axios.post('http://localhost:8000/item/eaten-item/', 
@@ -55,7 +69,6 @@ const DayView = () => {
       },
         }
       );
-      console.log("Item zapisany:", response.data);
     } catch (error) {
       console.error("Błąd przy zapisywaniu itemu:", error);
     }
@@ -66,7 +79,10 @@ const DayView = () => {
   };
 
   useEffect(() => {
-    console.log(formattedDate);
+    // if (selectedOption && quantity) {
+    // setShowModal(true); // otwórz modal dopiero po ustawieniu wartości
+    // }
+
     const fetchUserId = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -100,7 +116,7 @@ const DayView = () => {
       <h2>Month: {month}</h2>
       <h2>Day: {day}</h2>
 
-      <button onClick={() => setShowModal(true)}>Add Item</button>
+      <button onClick={() => {AddItem();}}>Add Item</button>
 
       {showModal && (
         <div style={{
@@ -150,7 +166,7 @@ const DayView = () => {
         </div>
       )}
 
-      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems}/>
+      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems} EditItem={EditItem}/>
     </>
   );
 };
