@@ -14,9 +14,19 @@ class ItemSerializer(serializers.ModelSerializer):
 class EatenItemSerializerPost(serializers.ModelSerializer):
     grams = serializers.DecimalField(max_digits=6, decimal_places=2, required=False)
     portion = serializers.DecimalField(max_digits=6, decimal_places=2, required=False)
+    calories = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)  # nowe pole
+
     class Meta:
         model = EatenItem
-        fields = '__all__'
+        fields = '__all__' 
+
+    def create(self, validated_data):
+        item = validated_data['item']
+        grams = validated_data.get('grams') or 0
+        portion = validated_data.get('portion') or 0
+        # obliczamy kalorie i zapisujemy w validated_data
+        validated_data['calories'] = grams * item.cal_in_gram + portion * item.cal_in_portion
+        return super().create(validated_data)
 
 class EatenItemSerializerGet(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source='user.id', read_only=True)
@@ -26,4 +36,4 @@ class EatenItemSerializerGet(serializers.ModelSerializer):
 
     class Meta:
         model = EatenItem
-        fields = ['user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion']
+        fields = ['user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion', 'calories']

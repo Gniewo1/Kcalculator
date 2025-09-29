@@ -23,9 +23,7 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
         fetchEatenItems();
     }, [formattedDate]);
 
-    // const showData = async () => {
-    //     console.log(eatenItems);
-    // }
+
 
 
     return(
@@ -38,14 +36,12 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
             {eatenItems.map((item) => (
             <li key={item.id}>
                 {item.item_name} 
-                {item.grams && ` – ${item.grams} g – ${Math.round(item.grams * item.item_cal_gram)} kcal`}
-                {item.portion && ` – ${item.portion} portions – ${Math.round(item.portion*item.item_cal_portion)} kcal`}
-                {/* {item.portion && ` – ${item.portion} portions`}  */}
+                {item.grams && ` – ${item.grams} g – ${Math.round(item.calories)} kcal`}
+                {item.portion && ` – ${item.portion} portions – ${Math.round(item.calories)} kcal`}
             </li>
             ))}
         </ul>
         </div>
-        {/* <button onClick={() => showData()}></button> */}
 
         </>
     );
