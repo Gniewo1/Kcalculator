@@ -7,18 +7,14 @@ export default function Itemscomponent ({ id, quantity, selectedOption, setSelec
 
 
     useEffect(() => {
-    if (!id) return; // If no id is provided, don't fetch
-
-
-    // Fetch item details using the provided `id`
-    axios
-      .get(`http://localhost:8000/item/item/${id}/`)
-      .then((response) => {
-        setItem(response.data);
-      })
-      .catch((err) => {
-        console.error('Error fetching item details:', err);
-      });
+      if (!id) return;
+      axios.get(`http://localhost:8000/item/item/${id}/`)
+        .then((response) => {
+          setItem(response.data);
+        })
+        .catch((err) => {
+          console.error('Error fetching item details:', err);
+        });
   }, [id]); // Re-run the effect when the `id` changes
     
 

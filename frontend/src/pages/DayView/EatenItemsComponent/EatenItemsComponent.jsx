@@ -2,24 +2,10 @@ import { useEffect } from 'react';
 import axios from "axios";
 
 
-export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems}) {
+export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems, fetchEatenItems}) {
     
 
     useEffect(() => {
-        const fetchEatenItems = async () => {
-            const token = localStorage.getItem('token');
-            try {
-                const response = await axios.get(`http://localhost:8000/item/eaten-item/${formattedDate}/`, { 
-                    headers: {
-                        'Authorization': `Token ${token}`,
-                    },
-                });
-                console.log(response.data);
-                setEatenItems(response.data);
-            } catch (error) {
-                console.error('Error fetching EatenItems', error);
-            }
-            };
         fetchEatenItems();
     }, [formattedDate]);
 

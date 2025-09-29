@@ -13,11 +13,25 @@ const DayView = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [quantity, setQuantity] = useState('');
   const [userId, setUserId] = useState(null);
-  const date = new Date(year, month - 1, day); // miesiące od 0
+  // const date = new Date(year, month - 1, day); // miesiące od 0
   const formattedDate = [year, String(month).padStart(2, "0"), String(day).padStart(2, "0"),].join("-");
   const [eatenItems, setEatenItems] = useState([]);
 
 
+  const fetchEatenItems = async () => {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.get(`http://localhost:8000/item/eaten-item/${formattedDate}/`, { 
+            headers: {
+                'Authorization': `Token ${token}`,
+            },
+        });
+        console.log(response.data);
+        setEatenItems(response.data);
+    } catch (error) {
+        console.error('Error fetching EatenItems', error);
+    }
+    };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,25 +43,26 @@ const DayView = () => {
       ...(selectedOption === "portion" ? { portion: quantity } : {})
     };
     
-    const postItem = async () => {
-      console.log(payload);
-      const token = localStorage.getItem('token');
-      try {
-        const response = await axios.post('http://localhost:8000/item/eaten-item/', 
-          payload,
-          {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-          }
-        );
-        console.log("Item zapisany:", response.data);
-      } catch (error) {
-        console.error("Błąd przy zapisywaniu itemu:", error);
-      }
-    };
-    postItem();
-    setShowModal(false);
+  const postItem = async () => {
+    console.log(payload);
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.post('http://localhost:8000/item/eaten-item/', 
+        payload,
+        {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+        }
+      );
+      console.log("Item zapisany:", response.data);
+    } catch (error) {
+      console.error("Błąd przy zapisywaniu itemu:", error);
+    }
+  };
+  await postItem();
+  fetchEatenItems();
+  setShowModal(false);
   };
 
   useEffect(() => {
@@ -135,7 +150,7 @@ const DayView = () => {
         </div>
       )}
 
-      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems}/>
+      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems}/>
     </>
   );
 };
