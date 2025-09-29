@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Item, EatenItem
 from rest_framework.response import Response
-from .serializers import ItemSerializer, EatenItemSerializer
+from .serializers import ItemSerializer, EatenItemSerializerPost, EatenItemSerializerGet
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status
@@ -27,7 +27,7 @@ class ItemView(APIView):
 class EatenItemView(APIView):
 
     def post(self, request):
-        serializer = EatenItemSerializer(data=request.data, context={'request': request})
+        serializer = EatenItemSerializerPost(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -35,7 +35,8 @@ class EatenItemView(APIView):
     
 
     def get(self, request, date):
-        items = EatenItem.objects.filter(date=date, user=request.user).values('id', 'name', 'grams', 'portion')
-        return Response(items, status=status.HTTP_200_OK)
+        items = EatenItem.objects.filter(date=date, user=request.user)
+        serializer = EatenItemSerializerGet(items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 

@@ -14,7 +14,7 @@ const DayView = () => {
   const [quantity, setQuantity] = useState('');
   const [userId, setUserId] = useState(null);
   const date = new Date(year, month - 1, day); // miesiące od 0
-  const formattedDate = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
+  const formattedDate = [year, String(month).padStart(2, "0"), String(day).padStart(2, "0"),].join("-");
   const [eatenItems, setEatenItems] = useState([]);
 
 
@@ -51,6 +51,7 @@ const DayView = () => {
   };
 
   useEffect(() => {
+    console.log(formattedDate);
     const fetchUserId = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -134,7 +135,7 @@ const DayView = () => {
         </div>
       )}
 
-      <EatenItemsComponent/>
+      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems}/>
     </>
   );
 };
