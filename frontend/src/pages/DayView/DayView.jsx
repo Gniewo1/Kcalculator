@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import ItemsComponent from "./ItemsComponent/ItemsComponent";
+import EatenItemsComponent from "./EatenItemsComponent/EatenItemsComponent";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
 
@@ -14,6 +15,7 @@ const DayView = () => {
   const [userId, setUserId] = useState(null);
   const date = new Date(year, month - 1, day); // miesiące od 0
   const formattedDate = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
+  const [eatenItems, setEatenItems] = useState([]);
 
 
 
@@ -131,6 +133,8 @@ const DayView = () => {
           </div>
         </div>
       )}
+
+      <EatenItemsComponent/>
     </>
   );
 };
