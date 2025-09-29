@@ -13,18 +13,27 @@ const DayView = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [quantity, setQuantity] = useState('');
   const [userId, setUserId] = useState(null);
-  // const date = new Date(year, month - 1, day); // miesiące od 0
   const formattedDate = [year, String(month).padStart(2, "0"), String(day).padStart(2, "0"),].join("-");
   const [eatenItems, setEatenItems] = useState([]);
+  const [newOrEdit, setNewOrEdit] = useState('')
 
   const AddItem = async () => {
+    setNewOrEdit("new");
     setSelectedOption(null);
     setQuantity('');
     setSelectedItem('');
     setShowModal(true);
   }
 
+  const handleUpdate = () => {
+
+  }
+  const handleAdd = () => {
+    
+  }
+
   const EditItem = (item) => {
+    setNewOrEdit("edit");
     if (item.grams) {setSelectedOption("gram");}
     if (item.portion) {setSelectedOption("portion");}
     setSelectedItem(item.item_id);
@@ -58,30 +67,28 @@ const DayView = () => {
       ...(selectedOption === "portion" ? { portion: quantity } : {})
     };
     
-  const postItem = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await axios.post('http://localhost:8000/item/eaten-item/', 
-        payload,
-        {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-        }
-      );
-    } catch (error) {
-      console.error("Błąd przy zapisywaniu itemu:", error);
-    }
-  };
-  await postItem();
-  fetchEatenItems();
-  setShowModal(false);
+    const postItem = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.post('http://localhost:8000/item/eaten-item/', 
+          payload,
+          {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+          }
+        );
+      } catch (error) {
+        console.error("Błąd przy zapisywaniu itemu:", error);
+      }
+    };
+    await postItem();
+    fetchEatenItems();
+    setShowModal(false);
   };
 
   useEffect(() => {
-    // if (selectedOption && quantity) {
-    // setShowModal(true); // otwórz modal dopiero po ustawieniu wartości
-    // }
+
 
     const fetchUserId = async () => {
       const token = localStorage.getItem('token');
@@ -157,8 +164,14 @@ const DayView = () => {
             {selectedItem && <ItemsComponent id={selectedItem} selectedOption={selectedOption} setSelectedOption={setSelectedOption} quantity={quantity} setQuantity={setQuantity}/>}
 
               <br /><br />
+              {newOrEdit === "new" && (
+                <button onClick={handleAdd}>Add Item</button>
+              )}
 
-              <button type="submit">Add</button>
+              {newOrEdit === "edit" && (
+                <button onClick={handleUpdate}>Update Item</button>
+              )}
+              {/* <button type="submit">Add</button> */}
               <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
 
             </form>
