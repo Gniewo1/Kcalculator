@@ -16,6 +16,7 @@ const DayView = () => {
   const formattedDate = [year, String(month).padStart(2, "0"), String(day).padStart(2, "0"),].join("-");
   const [eatenItems, setEatenItems] = useState([]);
   const [newOrEdit, setNewOrEdit] = useState('')
+  const [selectedItemEditId, setSelectedItemEditId] = useState('')   // Will take id of eatenitem which will edit
 
   const AddItem = async () => {
     setNewOrEdit("new");
@@ -38,6 +39,7 @@ const DayView = () => {
     if (item.portion) {setSelectedOption("portion");}
     setSelectedItem(item.item_id);
     setQuantity(item.grams || item.portion);
+    setSelectedItemEditId(item.id);
     setShowModal(true);
     
   }
@@ -46,7 +48,7 @@ const DayView = () => {
   const fetchEatenItems = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await axios.get(`http://localhost:8000/item/eaten-item/${formattedDate}/`, { 
+        const response = await axios.get(`http://localhost:8000/item/eaten-items/?date=${formattedDate}`, { 
             headers: {
                 'Authorization': `Token ${token}`,
             },
@@ -70,7 +72,7 @@ const DayView = () => {
     const postItem = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.post('http://localhost:8000/item/eaten-item/', 
+        const response = await axios.post('http://localhost:8000/item/eaten-items/', 
           payload,
           {
         headers: {
@@ -82,7 +84,35 @@ const DayView = () => {
         console.error("Błąd przy zapisywaniu itemu:", error);
       }
     };
-    await postItem();
+
+    const updateItem = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.put(`http://localhost:8000/item/eaten-items/${selectedItemEditId}/`, 
+          payload,
+          {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+          }
+        );
+      } catch (error) {
+        console.error("Błąd przy zapisywaniu itemu:", error);
+      }
+    };
+
+    if (newOrEdit === "new") {
+        await postItem();
+    }
+
+    if (newOrEdit === "edit") {
+        await updateItem();
+    }
+
+
+
+    
+    // await postItem();
     fetchEatenItems();
     setShowModal(false);
   };

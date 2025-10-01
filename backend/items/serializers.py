@@ -37,4 +37,4 @@ class EatenItemSerializerGet(serializers.ModelSerializer):
 
     class Meta:
         model = EatenItem
-        fields = [ 'item_id', 'user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion', 'calories']
+        fields = [ 'id', 'item_id', 'user_id', 'item_name', 'grams', 'portion', 'date', 'item_cal_gram', 'item_cal_portion', 'calories']
