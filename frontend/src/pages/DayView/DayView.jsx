@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import ItemsComponent from "./ItemsComponent/ItemsComponent";
 import EatenItemsComponent from "./EatenItemsComponent/EatenItemsComponent";
 import axios from "axios";
@@ -18,6 +18,34 @@ const DayView = () => {
   const [newOrEdit, setNewOrEdit] = useState('')
   const [selectedItemEditId, setSelectedItemEditId] = useState('')   // Will take id of eatenitem which will edit
 
+
+  const totalCalories = useMemo(() => {
+    return eatenItems.reduce((sum, item) => sum + (Number(item.calories) || 0), 0);
+  }, [eatenItems]);
+
+
+  // funckje do przycisków ADD EDIT DELETE
+
+  const DeleteItem = async (item) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/item/eaten-items/${item.id}/`,
+        { 
+          headers: {
+            'Authorization': `Token ${token}`,
+          },
+        }
+      );
+      console.log('Deleted successfully', response.data);
+    } catch (error) {
+      console.error('Error deleting EatenItems', error);
+    }
+  fetchEatenItems();
+  };
+
+  
+
   const AddItem = async () => {
     setNewOrEdit("new");
     setSelectedOption(null);
@@ -26,12 +54,6 @@ const DayView = () => {
     setShowModal(true);
   }
 
-  const handleUpdate = () => {
-
-  }
-  const handleAdd = () => {
-    
-  }
 
   const EditItem = (item) => {
     setNewOrEdit("edit");
@@ -44,7 +66,7 @@ const DayView = () => {
     
   }
 
-
+  /// pobiera nazwy itemów
   const fetchEatenItems = async () => {
     const token = localStorage.getItem('token');
     try {
@@ -195,11 +217,11 @@ const DayView = () => {
 
               <br /><br />
               {newOrEdit === "new" && (
-                <button onClick={handleAdd}>Add Item</button>
+                <button>Add Item</button>
               )}
 
               {newOrEdit === "edit" && (
-                <button onClick={handleUpdate}>Update Item</button>
+                <button>Update Item</button>
               )}
               {/* <button type="submit">Add</button> */}
               <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
@@ -209,7 +231,8 @@ const DayView = () => {
         </div>
       )}
 
-      <EatenItemsComponent   formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems} EditItem={EditItem}/>
+      <EatenItemsComponent formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems} EditItem={EditItem} totalCalories={totalCalories}
+       DeleteItem={DeleteItem}/>
     </>
   );
 };
