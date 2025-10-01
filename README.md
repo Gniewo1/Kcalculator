@@ -4,6 +4,15 @@ Pomysł zrodził się kiedy, postanowiłem notować co jem i ile to kalorii, że
 Notatki oraz obliczenia prowadziłem poprzez arkusz Excela tzn. wpisywałem codziennie co jadłem wraz za kalorycznością i sumę kalorii porównywałem z teoretycznym zapotrzebowaniem. Co miesiąc wyliczałem deficyt kaloryczny.
 W tym projekcie chcę osiągnać podobny rezultat.
 
+
+<h2>Techologie użyte:</h2>
+<ul>
+  <li>Backend: Django REST Framework(Python)</li>
+  <li>Frontend: React(JavaScript)</li>
+  <li>Baza danych: SQLite</li>
+  <li>Autoryzacja: Knox</li>
+</ul>
+
 <h2>Główne funkcje projektu</h2>
 
 <ul>
