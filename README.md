@@ -2,7 +2,7 @@
 Projekt strony internetowej ułatwiającej liczenie spożywanych kalorii. 
 Pomysł zrodził się kiedy, postanowiłem notować co jem i ile to kalorii, żeby schudnąć.
 Notatki oraz obliczenia prowadziłem poprzez arkusz Excela tzn. wpisywałem codziennie co jadłem wraz za kalorycznością i sumę kalorii porównywałem z teoretycznym zapotrzebowaniem. Co miesiąc wyliczałem deficyt kaloryczny.
-W tym projekcie chcę osiągnać podobny rezultat
+W tym projekcie chcę osiągnać podobny rezultat.
 
 <h2>Główne funkcje projektu</h2>
 
