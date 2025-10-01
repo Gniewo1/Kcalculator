@@ -1,4 +1,4 @@
-<h2>Kcalculator</h2>
+<h1>Kcalculator</h1>
 Projekt strony internetowej ułatwiającej liczenie spożywanych kalorii. 
 Pomysł zrodził się kiedy, postanowiłem notować co jem i ile to kalorii, żeby schudnąć.
 Notatki oraz obliczenia prowadziłem poprzez arkusz Excela tzn. wpisywałem codziennie co jadłem wraz za kalorycznością i sumę kalorii porównywałem z teoretycznym zapotrzebowaniem. Co miesiąc wyliczałem deficyt kaloryczny.
