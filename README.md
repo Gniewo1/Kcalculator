@@ -39,6 +39,8 @@ W tym projekcie chcę osiągnać podobny rezultat
 <h2>Dodatkowe funkcje</h2>
 <ul>
   <li><h3>Możliwość wprowadzania własnych zjedzonych produktów ze swoją kalorycznością (produkty te nie mają być osobno zapisywane z produktami "standardowymi")</h3></li>
+
+  <li><h3>Inne rzeczy na które jeszcze nie wpadłem</h3></li>
 </ul>
-<ul><h3>Coś na co jeszcze nie wpadłem</h3></ul>
+
 
