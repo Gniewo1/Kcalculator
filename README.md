@@ -35,8 +35,8 @@ W tym projekcie chcę osiągnać podobny rezultat.
 <li><h3>Obliczanie dziennych oraz miesięcznych zjedzonych kalorii oraz porównanie z teoretycznym zapotrzebowaniem (Trochę zrobione)</h3>
   Każda strona (webpage) dla danego dnia sumuje spożyte kalorie.
 
-  Do zrobienia jest dodanie teoretyczne zapotrzebowanie (limitu kalorycznego) oraz porównianie tego z kaloriami spożytymi.
-  Trzeba to zrobić dla każdego dnia oraz na stronie głównej podsumowanie miesięczne
+  Do zrobienia jest dodanie teoretycznego zapotrzebowania kalorycznego. Porównianie tego z kaloriami spożytymi.
+  Trzeba to zrobić dla każdego dnia oraz podsumowanie miesięczne.
 </li>
 
 <li><h3>Oprawa wizualna (Niezrobione)</h3>
