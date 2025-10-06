@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from 'react';
 import ItemsComponent from "./ItemsComponent/ItemsComponent";
 import EatenItemsComponent from "./EatenItemsComponent/EatenItemsComponent";
@@ -17,6 +17,7 @@ const DayView = () => {
   const [eatenItems, setEatenItems] = useState([]);
   const [newOrEdit, setNewOrEdit] = useState('')
   const [selectedItemEditId, setSelectedItemEditId] = useState('')   // Will take id of eatenitem which will edit
+  const navigate = useNavigate();
 
 
   const totalCalories = useMemo(() => {
@@ -26,7 +27,7 @@ const DayView = () => {
 
   // funckje do przycisków ADD EDIT DELETE
 
-  const DeleteItem = async (item) => {
+  const deleteItem = async (item) => {
     const token = localStorage.getItem('token');
     try {
       const response = await axios.delete(
@@ -46,7 +47,7 @@ const DayView = () => {
 
   
 
-  const AddItem = async () => {
+  const addItem = async () => {
     setNewOrEdit("new");
     setSelectedOption(null);
     setQuantity('');
@@ -55,7 +56,7 @@ const DayView = () => {
   }
 
 
-  const EditItem = (item) => {
+  const editItem = (item) => {
     setNewOrEdit("edit");
     if (item.grams) {setSelectedOption("gram");}
     if (item.portion) {setSelectedOption("portion");}
@@ -137,7 +138,23 @@ const DayView = () => {
     // await postItem();
     fetchEatenItems();
     setShowModal(false);
+
+  }; /// handleSubmit ending
+
+  const changeDate = async (days) => {
+    if (days == "back"){
+      navigate('/');
+    }else{
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() + days);
+    const newYear = date.getFullYear();
+    const newMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const newDay = date.getDate().toString().padStart(2, "0");
+    navigate(`/calendar/${newYear}/${newMonth}/${newDay}`);
+    }
   };
+
+
 
   useEffect(() => {
 
@@ -170,69 +187,74 @@ const DayView = () => {
   return (
     <>
     <Navbar/>
-      <h1>DayView</h1>
-      <h2>Year: {year}</h2>
-      <h2>Month: {month}</h2>
-      <h2>Day: {day}</h2>
 
-      <button onClick={() => {AddItem();}}>Add Item</button>
+    <button onClick={() => {changeDate("back");}}>Back</button>
+    <button onClick={() => {changeDate(-1);}}>Previous day</button>
+    <button onClick={() => {changeDate(1);}}>Next day</button>
 
-      {showModal && (
+    <h1>DayView</h1>
+    <h2>Year: {year}</h2>
+    <h2>Month: {month}</h2>
+    <h2>Day: {day}</h2>
+
+    <button onClick={() => {addItem();}}>Add Item</button>
+
+    {showModal && (
+      <div style={{
+        position: "fixed",
+        top: 0, left: 0,
+        width: "100%", height: "100%",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+      }}>
         <div style={{
-          position: "fixed",
-          top: 0, left: 0,
-          width: "100%", height: "100%",
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 1000,
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "8px",
+          minWidth: "300px",
         }}>
-          <div style={{
-            backgroundColor: "white",
-            padding: "20px",
-            borderRadius: "8px",
-            minWidth: "300px",
-          }}>
-            <h3>Add New Item</h3>
-            <form onSubmit={handleSubmit}>
+          <h3>Add New Item</h3>
+          <form onSubmit={handleSubmit}>
 
-              <label>
-              <select
-                value={selectedItem}
-                onChange={(e) => setSelectedItem(e.target.value)}
-                required
-                className="styled-select"
-              >
-                <option value="">-- Select Item --</option>
-                {items.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <label>
+            <select
+              value={selectedItem}
+              onChange={(e) => setSelectedItem(e.target.value)}
+              required
+              className="styled-select"
+            >
+              <option value="">-- Select Item --</option>
+              {items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            {selectedItem && <ItemsComponent id={selectedItem} selectedOption={selectedOption} setSelectedOption={setSelectedOption} quantity={quantity} setQuantity={setQuantity}/>}
+          {selectedItem && <ItemsComponent id={selectedItem} selectedOption={selectedOption} setSelectedOption={setSelectedOption} quantity={quantity} setQuantity={setQuantity}/>}
 
-              <br /><br />
-              {newOrEdit === "new" && (
-                <button>Add Item</button>
-              )}
+            <br /><br />
+            {newOrEdit === "new" && (
+              <button>Add Item</button>
+            )}
 
-              {newOrEdit === "edit" && (
-                <button>Update Item</button>
-              )}
-              {/* <button type="submit">Add</button> */}
-              <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
+            {newOrEdit === "edit" && (
+              <button>Update Item</button>
+            )}
+            {/* <button type="submit">Add</button> */}
+            <button type="button" onClick={() => setShowModal(false)} style={{ marginLeft: "10px" }}>Cancel</button>
 
-            </form>
-          </div>
+          </form>
         </div>
-      )}
+      </div>
+    )}
 
-      <EatenItemsComponent formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems} EditItem={EditItem} totalCalories={totalCalories}
-       DeleteItem={DeleteItem}/>
+    <EatenItemsComponent formattedDate={formattedDate} eatenItems={eatenItems} setEatenItems={setEatenItems} fetchEatenItems={fetchEatenItems} editItem={editItem} totalCalories={totalCalories}
+      deleteItem={deleteItem}/>
     </>
   );
 };

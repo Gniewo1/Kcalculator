@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import axios from "axios";
 
 
-export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems, fetchEatenItems, EditItem, totalCalories, DeleteItem}) {
+export default function EatenItemscomponent ({formattedDate, eatenItems, setEatenItems, fetchEatenItems, editItem, totalCalories, deleteItem}) {
     
 
     useEffect(() => {
