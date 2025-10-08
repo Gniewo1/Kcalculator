@@ -104,7 +104,7 @@ const DayView = () => {
           }
         );
       } catch (error) {
-        console.error("Błąd przy zapisywaniu itemu:", error);
+        console.error("Saving item error:", error);
       }
     };
 
@@ -195,7 +195,7 @@ const DayView = () => {
     <h1>DayView</h1>
     <h2>Year: {year}</h2>
     <h2>Month: {month}</h2>
-    <h2>Day: {day}</h2>
+    <h2>Day: {Number(day)}</h2>
 
     <button onClick={() => {addItem();}}>Add Item</button>
 

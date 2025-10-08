@@ -7,12 +7,13 @@ const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [dayCalories, setDayCalories] = useState([]);
+  const [caloriesLimit, setCaloriesLimit] = useState([]);
 
   const navigate = useNavigate();
 
   const monthNames = [
-    "Sty", "Lut", "Mar", "Kwi", "Maj", "Cze",
-    "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
   // Pierwszy i ostatni dzień miesiąca
@@ -41,6 +42,24 @@ const Calendar = () => {
 
   // Pobieranie kalorii dla miesiąca
   useEffect(() => {
+    const fetchCaloriesLimit = async () => {
+      const month = new Date(currentYear, currentMonth, 2);
+      const monthString = month.toISOString().split("T")[0];
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/auth/calories-limit/",
+          {
+            params: {  month: monthString  },  // 👈 tu przekazujesz parametr z zapytania
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
+        setCaloriesLimit(response.data);
+      } catch (error) {
+        console.error("Error fetching calories limit:", error);
+      }
+    };
+
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -58,11 +77,17 @@ const Calendar = () => {
     };
 
     fetchData();
+    fetchCaloriesLimit();
   }, [currentMonth, currentYear]); // pobierz przy zmianie miesiąca/roku
 
   return (
     <div style={{ textAlign: "center" }}>
       <h2>{monthNames[currentMonth]} {currentYear}</h2>
+
+      {caloriesLimit.length > 0 && (
+        <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
+      )}
+
 
       <div>
         <button style={{ margin: "10px" }} onClick={prevMonth}>◀</button>
@@ -78,7 +103,7 @@ const Calendar = () => {
         }}
       >
         {/* Dni tygodnia */}
-        {["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"].map((d, i) => (
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
           <div key={i} style={{ fontWeight: "bold" }}>{d}</div>
         ))}
 
@@ -120,7 +145,7 @@ const Calendar = () => {
             >
               <div>{day}</div>
               <div style={{ fontSize: "0.8em", color: "gray" }}>
-                {calories} kcal
+                {Math.round(calories)} kcal
               </div>
             </button>
           );

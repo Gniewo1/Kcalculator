@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, CaloriesLimit
 from django.contrib.auth import authenticate
 
 # Rejestracja
@@ -32,3 +32,8 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Nieprawidłowe dane logowania")
+    
+class CaloriesLimitSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = CaloriesLimit
+            fields = ('month', 'calories_limit')

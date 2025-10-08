@@ -16,7 +16,7 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
         <>
 
         <div>
-        <h2>Zjedzone produkty</h2>
+        <h2>Eaten items: </h2>
         <ul>
             {eatenItems.map((item) => (
             <li key={item.id}>
@@ -28,7 +28,7 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
             </li>
             ))}
         </ul>
-        <h3>Łączna liczba kalorii: {totalCalories} kcal</h3>
+        <h3>Total Calories: {totalCalories} kcal</h3>
         </div>
 
         </>

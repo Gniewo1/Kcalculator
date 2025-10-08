@@ -1,9 +1,10 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, CaloriesLimitSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from .models import CaloriesLimit
 
 
 # Rejestracja
@@ -48,4 +49,19 @@ class AuthView(APIView):
 
     def get(self, request):
         return Response({"user": request.user.username})
+    
+    
+class CaloriesLimitViewSet(viewsets.ModelViewSet):
+    queryset = CaloriesLimit.objects.all()
+    serializer_class = CaloriesLimitSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = CaloriesLimit.objects.filter(user=user)
+
+        month = self.request.query_params.get('month')
+        if month:
+            queryset = queryset.filter(month=month)
+
+        return queryset
 
