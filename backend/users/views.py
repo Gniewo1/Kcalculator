@@ -64,4 +64,10 @@ class CaloriesLimitViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(month=month)
 
         return queryset
+    
+    def perform_update(self, serializer):
+        calories_limit = serializer.validated_data.get('calories_limit')
+        serializer.save(
+            calories_limit = calories_limit
+        )
 

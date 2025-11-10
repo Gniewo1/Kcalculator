@@ -8,6 +8,8 @@ const Calendar = () => {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [dayCalories, setDayCalories] = useState([]);
   const [caloriesLimit, setCaloriesLimit] = useState([]);
+  const [editing, setEditing] = useState(false); // if user changing calories limit
+  const [newCalories, setNewCalories] = useState(""); // new calories limit
 
   const navigate = useNavigate();
 
@@ -33,11 +35,23 @@ const Calendar = () => {
   const prevMonth = () => {
     setCurrentMonth(prev => (prev === 0 ? 11 : prev - 1));
     if (currentMonth === 0) setCurrentYear(y => y - 1);
+    setEditing(false);
   };
 
   const nextMonth = () => {
     setCurrentMonth(prev => (prev === 11 ? 0 : prev + 1));
     if (currentMonth === 11) setCurrentYear(y => y + 1);
+    setEditing(false);
+  };
+
+  const handleEditClick = () => {
+    setEditing(true);
+    setNewCalories(caloriesLimit.length > 0 ? caloriesLimit[0].calories_limit : "");
+  };
+
+const handleSaveClick = () => {
+  console.log("Nowy limit kalorii:", newCalories);
+  setEditing(false);
   };
 
   // Pobieranie kalorii dla miesiąca
@@ -81,28 +95,39 @@ const Calendar = () => {
   }, [currentMonth, currentYear]);
 
   return (
-    
     <div style={{ textAlign: "center" }}>
       <h2>{monthNames[currentMonth]} {currentYear}</h2>
 
-      {caloriesLimit.length > 0 ? (
+      {/* Limit kalorii */}
+      {caloriesLimit.length > 0 || editing ? (
         <>
-        <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
-        <button>Edit calories limit</button>
+          {!editing ? (
+            <>
+              <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
+              <button onClick={handleEditClick}>Edit calories limit</button>
+            </>
+          ) : (
+            <>
+              <input
+                type="number"
+                value={newCalories}
+                onChange={(e) => setNewCalories(e.target.value)}
+              />
+              <button onClick={handleSaveClick}>Save</button>
+            </>
+          )}
         </>
-        ):(
-        <button>Add calories limit</button>
-        )
-      }
+      ) : (
+        <button onClick={handleEditClick}>Add calories limit</button>
+      )}
 
-
-
-
+      {/* Nawigacja miesięcy */}
       <div>
         <button style={{ margin: "10px" }} onClick={prevMonth}>◀</button>
         <button style={{ margin: "10px" }} onClick={nextMonth}>▶</button>
       </div>
 
+      {/* Siatka dni */}
       <div
         style={{
           display: "grid",
