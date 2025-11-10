@@ -50,7 +50,7 @@ const Calendar = () => {
         const response = await axios.get(
           "http://localhost:8000/auth/calories-limit/",
           {
-            params: {  month: monthString  },  // 👈 tu przekazujesz parametr z zapytania
+            params: {  month: monthString  }, 
             headers: { Authorization: `Token ${token}` },
           }
         );
@@ -78,15 +78,24 @@ const Calendar = () => {
 
     fetchData();
     fetchCaloriesLimit();
-  }, [currentMonth, currentYear]); // pobierz przy zmianie miesiąca/roku
+  }, [currentMonth, currentYear]);
 
   return (
+    
     <div style={{ textAlign: "center" }}>
       <h2>{monthNames[currentMonth]} {currentYear}</h2>
 
-      {caloriesLimit.length > 0 && (
+      {caloriesLimit.length > 0 ? (
+        <>
         <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
-      )}
+        <button>Edit calories limit</button>
+        </>
+        ):(
+        <button>Add calories limit</button>
+        )
+      }
+
+
 
 
       <div>
