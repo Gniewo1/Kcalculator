@@ -54,6 +54,7 @@ class AuthView(APIView):
 class CaloriesLimitViewSet(viewsets.ModelViewSet):
     queryset = CaloriesLimit.objects.all()
     serializer_class = CaloriesLimitSerializer
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -64,6 +65,11 @@ class CaloriesLimitViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(month=month)
 
         return queryset
+    
+    def perform_create(self, serializer):
+        calories_limit = serializer.validated_data.get('calories_limit')
+        month = serializer.validated_data.get('month')
+        serializer.save(user=self.request.user, calories_limit=calories_limit, month=month)
     
     def perform_update(self, serializer):
         calories_limit = serializer.validated_data.get('calories_limit')

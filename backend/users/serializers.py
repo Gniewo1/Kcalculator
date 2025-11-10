@@ -36,4 +36,4 @@ class LoginSerializer(serializers.Serializer):
 class CaloriesLimitSerializer(serializers.ModelSerializer):
         class Meta:
             model = CaloriesLimit
-            fields = ('month', 'calories_limit')
+            fields = ('id', 'month', 'calories_limit')

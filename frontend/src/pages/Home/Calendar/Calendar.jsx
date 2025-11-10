@@ -49,12 +49,60 @@ const Calendar = () => {
     setNewCalories(caloriesLimit.length > 0 ? caloriesLimit[0].calories_limit : "");
   };
 
-const handleSaveClick = () => {
-  console.log("Nowy limit kalorii:", newCalories);
-  setEditing(false);
+  const handleSaveClick = () => {
+    console.log("Nowy limit kalorii:", newCalories);
+    saveCaloriesLimit();
+    setEditing(false);
+    };
+
+  //////// Changing calorieelimit function
+  const saveCaloriesLimit = async () => {
+    try {
+
+      //// Date to add to new calories limit
+      const formattedMonth = `${currentYear}-${(currentMonth + 1)
+      .toString()
+      .padStart(2, "0")}-01`;
+
+      
+      const token = localStorage.getItem("token");
+      let response;
+
+      if (caloriesLimit.length > 0) {
+        // już istnieje → update
+        const id = caloriesLimit[0].id;
+        response = await axios.patch(
+          `http://localhost:8000/auth/calories-limit/${id}/`,
+          { calories_limit: newCalories },
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      } else {
+        // brak limitu → create
+        response = await axios.post(
+          `http://localhost:8000/auth/calories-limit/`,
+          { calories_limit: newCalories, month: formattedMonth },
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        setCaloriesLimit([response.data]); // aktualizuj stan
+        setEditing(false);
+      }
+    } catch (error) {
+      console.error("Błąd zapisu limitu kalorii:", error.response ? error.response.data : error.message);
+    }
   };
 
-  // Pobieranie kalorii dla miesiąca
+  /////////////////////////////////////////////////////////////////////////////////////////////////// USE EFFECT
   useEffect(() => {
     const fetchCaloriesLimit = async () => {
       const month = new Date(currentYear, currentMonth, 2);
@@ -94,6 +142,10 @@ const handleSaveClick = () => {
     fetchCaloriesLimit();
   }, [currentMonth, currentYear]);
 
+
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////// RETURN
   return (
     <div style={{ textAlign: "center" }}>
       <h2>{monthNames[currentMonth]} {currentYear}</h2>
