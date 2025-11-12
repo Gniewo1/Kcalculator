@@ -55,6 +55,10 @@ const Calendar = () => {
     setEditing(false);
     };
 
+  const handleBackClick = () => {
+    setEditing(false);
+    };
+
   //////// Changing calorieelimit function
   const saveCaloriesLimit = async () => {
     try {
@@ -160,6 +164,7 @@ const Calendar = () => {
             </>
           ) : (
             <>
+              <button onClick={handleBackClick}>Back</button>
               <input
                 type="number"
                 value={newCalories}

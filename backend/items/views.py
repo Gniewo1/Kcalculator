@@ -60,8 +60,13 @@ class EatenItemViewSet(viewsets.ModelViewSet):
         grams = serializer.validated_data.get('grams') or 0
         portion = serializer.validated_data.get('portion') or 0
         item_obj = serializer.validated_data.get('item', serializer.instance.item)
+        if grams != 0:
+            calories= grams * item_obj.cal_in_gram
+        elif portion != 0:
+            calories= portion * item_obj.cal_in_portion
+        else: calories = 0
         serializer.save(
-            calories=grams * item_obj.cal_in_gram + portion * item_obj.cal_in_portion
+            calories = calories
         )
 
     @action(detail=False, methods=['get'])
