@@ -7,7 +7,8 @@ const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [dayCalories, setDayCalories] = useState([]);
-  const [caloriesLimit, setCaloriesLimit] = useState([]);
+  const [caloriesLimit, setCaloriesLimit] = useState([]); /// calories limit, all info 
+  const [caloriesLimitNumber, setCaloriesLimitNumber] = useState(0); /// calories limit but just a number of calories
   const [editing, setEditing] = useState(false); // if user changing calories limit
   const [newCalories, setNewCalories] = useState(""); // new calories limit
 
@@ -99,11 +100,22 @@ const Calendar = () => {
 
       if (response.status === 200 || response.status === 201) {
         setCaloriesLimit([response.data]); // aktualizuj stan
+        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0)
         setEditing(false);
       }
     } catch (error) {
       console.error("Błąd zapisu limitu kalorii:", error.response ? error.response.data : error.message);
     }
+  };
+
+  //// Change color of calendar days
+  const getColorByCalories = (cal, limit) => {
+    console.log("cal: " + cal);
+    console.log(limit);
+    let result = limit - cal
+    if (result > 250) return "#a8e6a3";     
+    if (0 <= result ) return "#ffd59e";    
+    return "#ff9e9e";                    
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////// USE EFFECT
@@ -121,6 +133,7 @@ const Calendar = () => {
           }
         );
         setCaloriesLimit(response.data);
+        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0);
       } catch (error) {
         console.error("Error fetching calories limit:", error);
       }
@@ -219,13 +232,13 @@ const Calendar = () => {
               key={day}
               style={{
                 padding: "10px",
-                background:
+                background: calories === 0 ? "white" : getColorByCalories(calories, caloriesLimitNumber),
+                border:
                   day === today.getDate() &&
                   currentMonth === today.getMonth() &&
                   currentYear === today.getFullYear()
-                    ? "lightblue"
-                    : "white",
-                border: "1px solid #ccc",
+                    ? "3px solid black"
+                    : "1px solid #ccc",
                 borderRadius: "5px",
                 cursor: "pointer",
                 display: "flex",
