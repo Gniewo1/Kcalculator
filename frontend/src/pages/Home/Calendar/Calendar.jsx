@@ -7,7 +7,10 @@ const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [dayCalories, setDayCalories] = useState([]);
-  const [caloriesLimit, setCaloriesLimit] = useState([]);
+  const [caloriesLimit, setCaloriesLimit] = useState([]); /// calories limit, all info 
+  const [caloriesLimitNumber, setCaloriesLimitNumber] = useState(0); /// calories limit but just a number of calories
+  const [editing, setEditing] = useState(false); // if user changing calories limit
+  const [newCalories, setNewCalories] = useState(""); // new calories limit
 
   const navigate = useNavigate();
 
@@ -33,14 +36,89 @@ const Calendar = () => {
   const prevMonth = () => {
     setCurrentMonth(prev => (prev === 0 ? 11 : prev - 1));
     if (currentMonth === 0) setCurrentYear(y => y - 1);
+    setEditing(false);
   };
 
   const nextMonth = () => {
     setCurrentMonth(prev => (prev === 11 ? 0 : prev + 1));
     if (currentMonth === 11) setCurrentYear(y => y + 1);
+    setEditing(false);
   };
 
-  // Pobieranie kalorii dla miesiąca
+  const handleEditClick = () => {
+    setEditing(true);
+    setNewCalories(caloriesLimit.length > 0 ? caloriesLimit[0].calories_limit : "");
+  };
+
+  const handleSaveClick = () => {
+    console.log("Nowy limit kalorii:", newCalories);
+    saveCaloriesLimit();
+    setEditing(false);
+    };
+
+  const handleBackClick = () => {
+    setEditing(false);
+    };
+
+  //////// Changing calorieelimit function
+  const saveCaloriesLimit = async () => {
+    try {
+
+      //// Date to add to new calories limit
+      const formattedMonth = `${currentYear}-${(currentMonth + 1)
+      .toString()
+      .padStart(2, "0")}-01`;
+
+      
+      const token = localStorage.getItem("token");
+      let response;
+
+      if (caloriesLimit.length > 0) {
+        // już istnieje → update
+        const id = caloriesLimit[0].id;
+        response = await axios.patch(
+          `http://localhost:8000/auth/calories-limit/${id}/`,
+          { calories_limit: newCalories },
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      } else {
+        // brak limitu → create
+        response = await axios.post(
+          `http://localhost:8000/auth/calories-limit/`,
+          { calories_limit: newCalories, month: formattedMonth },
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        setCaloriesLimit([response.data]); // aktualizuj stan
+        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0)
+        setEditing(false);
+      }
+    } catch (error) {
+      console.error("Błąd zapisu limitu kalorii:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  //// Change color of calendar days
+  const getColorByCalories = (cal, limit) => {
+    console.log("cal: " + cal);
+    console.log(limit);
+    let result = limit - cal
+    if (result > 250) return "#a8e6a3";     
+    if (0 <= result ) return "#ffd59e";    
+    return "#ff9e9e";                    
+  };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////// USE EFFECT
   useEffect(() => {
     const fetchCaloriesLimit = async () => {
       const month = new Date(currentYear, currentMonth, 2);
@@ -50,11 +128,12 @@ const Calendar = () => {
         const response = await axios.get(
           "http://localhost:8000/auth/calories-limit/",
           {
-            params: {  month: monthString  },  // 👈 tu przekazujesz parametr z zapytania
+            params: {  month: monthString  }, 
             headers: { Authorization: `Token ${token}` },
           }
         );
         setCaloriesLimit(response.data);
+        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0);
       } catch (error) {
         console.error("Error fetching calories limit:", error);
       }
@@ -78,22 +157,47 @@ const Calendar = () => {
 
     fetchData();
     fetchCaloriesLimit();
-  }, [currentMonth, currentYear]); // pobierz przy zmianie miesiąca/roku
+  }, [currentMonth, currentYear]);
 
+
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////// RETURN
   return (
     <div style={{ textAlign: "center" }}>
       <h2>{monthNames[currentMonth]} {currentYear}</h2>
 
-      {caloriesLimit.length > 0 && (
-        <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
+      {/* Limit kalorii */}
+      {caloriesLimit.length > 0 || editing ? (
+        <>
+          {!editing ? (
+            <>
+              <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
+              <button onClick={handleEditClick}>Edit calories limit</button>
+            </>
+          ) : (
+            <>
+              <button onClick={handleBackClick}>Back</button>
+              <input
+                type="number"
+                value={newCalories}
+                onChange={(e) => setNewCalories(e.target.value)}
+              />
+              <button onClick={handleSaveClick}>Save</button>
+            </>
+          )}
+        </>
+      ) : (
+        <button onClick={handleEditClick}>Add calories limit</button>
       )}
 
-
+      {/* Nawigacja miesięcy */}
       <div>
         <button style={{ margin: "10px" }} onClick={prevMonth}>◀</button>
         <button style={{ margin: "10px" }} onClick={nextMonth}>▶</button>
       </div>
 
+      {/* Siatka dni */}
       <div
         style={{
           display: "grid",
@@ -128,13 +232,13 @@ const Calendar = () => {
               key={day}
               style={{
                 padding: "10px",
-                background:
+                background: calories === 0 ? "white" : getColorByCalories(calories, caloriesLimitNumber),
+                border:
                   day === today.getDate() &&
                   currentMonth === today.getMonth() &&
                   currentYear === today.getFullYear()
-                    ? "lightblue"
-                    : "white",
-                border: "1px solid #ccc",
+                    ? "3px solid black"
+                    : "1px solid #ccc",
                 borderRadius: "5px",
                 cursor: "pointer",
                 display: "flex",

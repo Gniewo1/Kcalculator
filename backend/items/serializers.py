@@ -25,7 +25,12 @@ class EatenItemSerializerPost(serializers.ModelSerializer):
         grams = validated_data.get('grams') or 0
         portion = validated_data.get('portion') or 0
         # obliczamy kalorie i zapisujemy w validated_data
-        validated_data['calories'] = grams * item.cal_in_gram + portion * item.cal_in_portion
+        if grams != 0:
+            validated_data['calories'] = grams * item.cal_in_gram
+        elif portion != 0:
+            validated_data['calories'] = portion * item.cal_in_portion
+        else: validated_data['calories'] = 0
+        
         return super().create(validated_data)
 
 class EatenItemSerializerGet(serializers.ModelSerializer):

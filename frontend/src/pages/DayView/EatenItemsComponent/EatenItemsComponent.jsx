@@ -23,8 +23,8 @@ export default function EatenItemscomponent ({formattedDate, eatenItems, setEate
                 {item.item_name} 
                 {item.grams && ` – ${item.grams} g – ${Math.round(item.calories)} kcal`}
                 {item.portion && ` – ${item.portion} portions – ${Math.round(item.calories)} kcal`}
-                <button onClick={() => {EditItem(item);}}>Edit</button>
-                <button onClick={() => {DeleteItem(item);}}>Delete</button>
+                <button onClick={() => {editItem(item);}}>Edit</button>
+                <button onClick={() => {deleteItem(item);}}>Delete</button>
             </li>
             ))}
         </ul>
