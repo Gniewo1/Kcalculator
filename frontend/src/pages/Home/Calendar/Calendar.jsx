@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import "./Calendar.css";
 
 const Calendar = () => {
   const today = new Date();
@@ -198,6 +199,7 @@ const Calendar = () => {
       </div>
 
       {/* Siatka dni */}
+      <div className="container">
       <div
         style={{
           display: "grid",
@@ -208,7 +210,7 @@ const Calendar = () => {
       >
         {/* Dni tygodnia */}
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-          <div key={i} style={{ fontWeight: "bold" }}>{d}</div>
+          <div key={i} style={{ fontWeight: "bold", color: "white" }}>{d}</div>
         ))}
 
         {/* Puste miejsca przed pierwszym dniem */}
@@ -237,7 +239,7 @@ const Calendar = () => {
                   day === today.getDate() &&
                   currentMonth === today.getMonth() &&
                   currentYear === today.getFullYear()
-                    ? "3px solid black"
+                    ? "groove red"
                     : "1px solid #ccc",
                 borderRadius: "5px",
                 cursor: "pointer",
@@ -255,6 +257,7 @@ const Calendar = () => {
           );
         })}
       </div>
+    </div>
     </div>
   );
 };
