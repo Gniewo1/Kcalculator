@@ -1,3 +1,6 @@
-.spacer {
-    padding: 50px;
+.home-content {
+  padding-top: 80px; /* dopasuj do wysokości navbaru */
+  width: 100%;
+  display: flex;
+  justify-content: center; /* opcjonalnie wyśrodkowanie Calendar */
 }

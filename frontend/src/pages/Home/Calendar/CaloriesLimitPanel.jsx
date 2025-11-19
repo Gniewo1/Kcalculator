@@ -6,7 +6,7 @@ const CaloriesLimitPanel = ({caloriesLimit,editing, newCalories, onEdit, onCance
     
   return (
     <>
-    <div className="panel-container">
+    {/* <div className="panel-container"> */}
       {caloriesLimit.length > 0 || editing ? (
         <>
           {!editing ? (
@@ -16,7 +16,7 @@ const CaloriesLimitPanel = ({caloriesLimit,editing, newCalories, onEdit, onCance
             </>
           ) : (
             <>
-            <div className="edit-container">
+            {/* <div className="edit-container"> */}
               <button className="panel-button" onClick={onCancel}>Back</button>
               <input
                 className="form-input"
@@ -25,14 +25,14 @@ const CaloriesLimitPanel = ({caloriesLimit,editing, newCalories, onEdit, onCance
                 onChange={onChange}
               />
               <button className="panel-button" onClick={onSave}>Save</button>
-              </div>
+              {/* </div> */}
             </>
           )}
         </>
       ) : (
         <button className="panel-button" onClick={onEdit}>Add calories limit</button>
       )}
-      </div>
+      {/* </div> */}
     </>
   );
 };

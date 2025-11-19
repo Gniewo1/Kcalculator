@@ -9,8 +9,9 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="spacer"></div>
+      <div className="home-content">
       <Calendar />
+      </div>
     </>
   );
 }

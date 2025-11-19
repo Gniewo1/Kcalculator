@@ -9,7 +9,10 @@
     position: fixed; 
     top: 0;
     left: 0;
+
 }
+
+
 
 .logo{
     font-size: 36px;
@@ -37,7 +40,7 @@
   display: flex;
   list-style: none;
   gap: 30px; 
-  margin: 10;
+  margin: 10px;
   margin-right: 30px;
   align-items: center; 
 }
