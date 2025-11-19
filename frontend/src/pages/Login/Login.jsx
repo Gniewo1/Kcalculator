@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
 import "./Login.css";
 
 
@@ -10,6 +11,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const { checkLogin } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await axios.post("http://127.0.0.1:8000/auth/login/", {
@@ -17,6 +20,7 @@ export default function Login() {
       password,
     });
     localStorage.setItem("token", res.data.token);
+    checkLogin();
     alert("Login as " + res.data.user.username);
     navigate('/');
 

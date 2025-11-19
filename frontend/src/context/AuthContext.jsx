@@ -58,9 +58,11 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
+
   useEffect(() => {
     checkLogin();
   }, []);
+
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, logout, checkLogin }}>
