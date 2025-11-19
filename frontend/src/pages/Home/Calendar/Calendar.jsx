@@ -1,39 +1,28 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Calendar.css";
+
+import CalendarHeader from "./CalendarHeader";
+import CaloriesLimitPanel from "./CaloriesLimitPanel";
+import CalendarGrid from "./CalendarGrid";
 
 const Calendar = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
   const [dayCalories, setDayCalories] = useState([]);
-  const [caloriesLimit, setCaloriesLimit] = useState([]); /// calories limit, all info 
-  const [caloriesLimitNumber, setCaloriesLimitNumber] = useState(0); /// calories limit but just a number of calories
-  const [editing, setEditing] = useState(false); // if user changing calories limit
-  const [newCalories, setNewCalories] = useState(""); // new calories limit
+  const [caloriesLimit, setCaloriesLimit] = useState([]);
+  const [caloriesLimitNumber, setCaloriesLimitNumber] = useState(0);
+
+  const [editing, setEditing] = useState(false);
+  const [newCalories, setNewCalories] = useState("");
 
   const navigate = useNavigate();
 
-  const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
-
-  // Pierwszy i ostatni dzień miesiąca
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
-  const daysInMonth = lastDay.getDate();
-  const startDay = firstDay.getDay(); // 0 = niedziela, 1 = poniedziałek...
-
-  // Tworzymy tablicę dni
-  const days = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    days.push(i);
-  }
-
-  // Obsługa zmiany miesiąca
+  // ----------------------------------------------
+  // Month navigation
+  // ----------------------------------------------
   const prevMonth = () => {
     setCurrentMonth(prev => (prev === 0 ? 11 : prev - 1));
     if (currentMonth === 0) setCurrentYear(y => y - 1);
@@ -46,105 +35,78 @@ const Calendar = () => {
     setEditing(false);
   };
 
-  const handleEditClick = () => {
-    setEditing(true);
-    setNewCalories(caloriesLimit.length > 0 ? caloriesLimit[0].calories_limit : "");
-  };
-
-  const handleSaveClick = () => {
-    console.log("Nowy limit kalorii:", newCalories);
-    saveCaloriesLimit();
-    setEditing(false);
-    };
-
-  const handleBackClick = () => {
-    setEditing(false);
-    };
-
-  //////// Changing calorieelimit function
+  // ----------------------------------------------
+  // Save calories limit
+  // ----------------------------------------------
   const saveCaloriesLimit = async () => {
     try {
-
-      //// Date to add to new calories limit
       const formattedMonth = `${currentYear}-${(currentMonth + 1)
-      .toString()
-      .padStart(2, "0")}-01`;
+        .toString()
+        .padStart(2, "0")}-01`;
 
-      
       const token = localStorage.getItem("token");
       let response;
 
       if (caloriesLimit.length > 0) {
-        // już istnieje → update
         const id = caloriesLimit[0].id;
         response = await axios.patch(
           `http://localhost:8000/auth/calories-limit/${id}/`,
           { calories_limit: newCalories },
           {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
+            headers: { Authorization: `Token ${token}` }
           }
         );
       } else {
-        // brak limitu → create
         response = await axios.post(
           `http://localhost:8000/auth/calories-limit/`,
           { calories_limit: newCalories, month: formattedMonth },
           {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
+            headers: { Authorization: `Token ${token}` }
           }
         );
       }
 
       if (response.status === 200 || response.status === 201) {
-        setCaloriesLimit([response.data]); // aktualizuj stan
-        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0)
+        setCaloriesLimit([response.data]);
+        setCaloriesLimitNumber(Number(response.data.calories_limit));
         setEditing(false);
       }
     } catch (error) {
-      console.error("Błąd zapisu limitu kalorii:", error.response ? error.response.data : error.message);
+      console.error("Error saving calories limit:", error);
     }
   };
 
-  //// Change color of calendar days
-  const getColorByCalories = (cal, limit) => {
-    console.log("cal: " + cal);
-    console.log(limit);
-    let result = limit - cal
-    if (result > 250) return "#a8e6a3";     
-    if (0 <= result ) return "#ffd59e";    
-    return "#ff9e9e";                    
-  };
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////// USE EFFECT
+  // ----------------------------------------------
+  // Fetch data
+  // ----------------------------------------------
   useEffect(() => {
     const fetchCaloriesLimit = async () => {
       const month = new Date(currentYear, currentMonth, 2);
       const monthString = month.toISOString().split("T")[0];
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
+
       try {
         const response = await axios.get(
           "http://localhost:8000/auth/calories-limit/",
           {
-            params: {  month: monthString  }, 
-            headers: { Authorization: `Token ${token}` },
+            params: { month: monthString },
+            headers: { Authorization: `Token ${token}` }
           }
         );
         setCaloriesLimit(response.data);
-        setCaloriesLimitNumber(response.data.length > 0 ? Number(response.data[0].calories_limit) : 0);
+        setCaloriesLimitNumber(
+          response.data.length > 0 ? Number(response.data[0].calories_limit) : 0
+        );
       } catch (error) {
         console.error("Error fetching calories limit:", error);
       }
     };
 
-    const fetchData = async () => {
+    const fetchDayCalories = async () => {
+      const token = localStorage.getItem("token");
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get(
-          'http://localhost:8000/item/eaten-items/monthly_summary/',
+          "http://localhost:8000/item/eaten-items/monthly_summary/",
           {
             params: { year: currentYear, month: currentMonth + 1 },
             headers: { Authorization: `Token ${token}` }
@@ -152,112 +114,46 @@ const Calendar = () => {
         );
         setDayCalories(response.data);
       } catch (error) {
-        console.error('Error fetching monthly summary:', error);
+        console.error("Error fetching daily calories:", error);
       }
     };
 
-    fetchData();
     fetchCaloriesLimit();
+    fetchDayCalories();
   }, [currentMonth, currentYear]);
 
-
-
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////// RETURN
   return (
     <div style={{ textAlign: "center" }}>
-      <h2>{monthNames[currentMonth]} {currentYear}</h2>
+      <CalendarHeader
+        currentMonth={currentMonth}
+        currentYear={currentYear}
+        onPrev={prevMonth}
+        onNext={nextMonth}
+      />
 
-      {/* Limit kalorii */}
-      {caloriesLimit.length > 0 || editing ? (
-        <>
-          {!editing ? (
-            <>
-              <h2>Calories limit: {Math.round(caloriesLimit[0].calories_limit)} kcal</h2>
-              <button onClick={handleEditClick}>Edit calories limit</button>
-            </>
-          ) : (
-            <>
-              <button onClick={handleBackClick}>Back</button>
-              <input
-                type="number"
-                value={newCalories}
-                onChange={(e) => setNewCalories(e.target.value)}
-              />
-              <button onClick={handleSaveClick}>Save</button>
-            </>
-          )}
-        </>
-      ) : (
-        <button onClick={handleEditClick}>Add calories limit</button>
-      )}
-
-      {/* Nawigacja miesięcy */}
-      <div>
-        <button style={{ margin: "10px" }} onClick={prevMonth}>◀</button>
-        <button style={{ margin: "10px" }} onClick={nextMonth}>▶</button>
-      </div>
-
-      {/* Siatka dni */}
-      <div className="container">
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          gap: "5px",
-          marginTop: "20px",
-        }}
-      >
-        {/* Dni tygodnia */}
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-          <div key={i} style={{ fontWeight: "bold", color: "white" }}>{d}</div>
-        ))}
-
-        {/* Puste miejsca przed pierwszym dniem */}
-        {Array((startDay + 6) % 7).fill(null).map((_, i) => (
-          <div key={"empty-" + i}></div>
-        ))}
-
-        {/* Dni miesiąca */}
-        {days.map((day) => {
-          const dayData = dayCalories.find(dc => {
-            const d = new Date(dc.date);
-            return d.getDate() === day &&
-                   d.getMonth() === currentMonth &&
-                   d.getFullYear() === currentYear;
-          });
-
-          const calories = dayData ? dayData.total_calories : 0;
-
-          return (
-            <button
-              key={day}
-              style={{
-                padding: "10px",
-                background: calories === 0 ? "white" : getColorByCalories(calories, caloriesLimitNumber),
-                border:
-                  day === today.getDate() &&
-                  currentMonth === today.getMonth() &&
-                  currentYear === today.getFullYear()
-                    ? "groove red"
-                    : "1px solid #ccc",
-                borderRadius: "5px",
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
-              }}
-              onClick={() => navigate(`/calendar/${currentYear}/${currentMonth + 1}/${day}`)}
-            >
-              <div>{day}</div>
-              <div style={{ fontSize: "0.8em", color: "gray" }}>
-                {Math.round(calories)} kcal
-              </div>
-            </button>
+      <CaloriesLimitPanel
+        caloriesLimit={caloriesLimit}
+        editing={editing}
+        newCalories={newCalories}
+        onEdit={() => {
+          setEditing(true);
+          setNewCalories(
+            caloriesLimit.length > 0 ? caloriesLimit[0].calories_limit : ""
           );
-        })}
-      </div>
-    </div>
+        }}
+        onCancel={() => setEditing(false)}
+        onSave={saveCaloriesLimit}
+        onChange={(e) => setNewCalories(e.target.value)}
+      />
+
+      <CalendarGrid
+        currentMonth={currentMonth}
+        currentYear={currentYear}
+        today={today}
+        dayCalories={dayCalories}
+        caloriesLimitNumber={caloriesLimitNumber}
+        navigate={navigate}
+      />
     </div>
   );
 };
