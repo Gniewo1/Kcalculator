@@ -1,6 +1,6 @@
 .home-content {
-  padding-top: 80px; /* dopasuj do wysokości navbaru */
-  width: 100%;
+  margin-top: 70px; /* match navbar height exactly */
+  width: 100vw;
   display: flex;
-  justify-content: center; /* opcjonalnie wyśrodkowanie Calendar */
+  justify-content: center;
 }

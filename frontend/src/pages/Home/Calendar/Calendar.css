@@ -9,9 +9,11 @@
 
 /* Wrapping panel */
 .calendar-container {
-  width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  height: 800px; /* Set a fixed height */
+  overflow: auto; /* Add scroll if content exceeds height */
   background: rgba(0, 0, 0, 0.75);
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(255, 230, 180, 0.2);
