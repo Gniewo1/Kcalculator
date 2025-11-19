@@ -1,6 +1,11 @@
+/// Calendar main file
+
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+import "./Calendar.css";
 
 import CalendarHeader from "./CalendarHeader";
 import CaloriesLimitPanel from "./CaloriesLimitPanel";
@@ -145,7 +150,7 @@ const Calendar = () => {
         onSave={saveCaloriesLimit}
         onChange={(e) => setNewCalories(e.target.value)}
       />
-
+      <div className="calendar-container">
       <CalendarGrid
         currentMonth={currentMonth}
         currentYear={currentYear}
@@ -154,6 +159,7 @@ const Calendar = () => {
         caloriesLimitNumber={caloriesLimitNumber}
         navigate={navigate}
       />
+      </div>
     </div>
   );
 };

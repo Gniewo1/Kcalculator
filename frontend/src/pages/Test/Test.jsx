@@ -7,8 +7,6 @@ export default function Test() {
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     
 
-
-
     return(
         <>
         <h1>Test</h1>

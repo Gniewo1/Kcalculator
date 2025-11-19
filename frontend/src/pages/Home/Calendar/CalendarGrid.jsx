@@ -1,3 +1,5 @@
+//// Grid for CalendarDays buttons
+
 import CalendarDay from "./CalendarDay";
 
 const CalendarGrid = ({
